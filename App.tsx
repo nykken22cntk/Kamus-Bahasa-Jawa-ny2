@@ -4,17 +4,38 @@ import { DictionaryEntry } from './types';
 import { INITIAL_DATA, ADMIN_PASSWORD } from './constants';
 import { getSuggestedTranslations } from './services/geminiService';
 
-// Ornamen emas seperti di gambar
-const OrnamenEmas = () => (
-  <svg viewBox="0 0 200 50" className="w-48 h-auto text-[#b4905a] fill-current opacity-80">
-    <path d="M100 25 C80 25, 75 10, 60 10 C45 10, 40 20, 20 20 L20 22 C40 22, 45 12, 60 12 C75 12, 80 27, 100 27 C120 27, 125 12, 140 12 C155 12, 160 22, 180 22 L180 20 C160 20, 155 10, 140 10 C125 10, 120 25, 100 25 Z" />
-    <path d="M95 30 L100 40 L105 30 Z" />
-    <circle cx="100" cy="20" r="2" />
+// Elegant Javanese floral carving ornament (Ukiran Jawa Motif)
+const UkiranJawa = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 200 100" className={className}>
+    <path 
+      d="M100 80 Q 100 40 140 40 Q 160 40 160 60 Q 160 70 150 70 Q 140 70 140 60 Q 140 50 150 50 M100 80 Q 100 40 60 40 Q 40 40 40 60 Q 40 70 50 70 Q 60 70 60 60 Q 60 50 50 50" 
+      fill="none" 
+      stroke="currentColor" 
+      strokeWidth="2.5" 
+      strokeLinecap="round"
+      className="text-[#d97706]"
+    />
+    <path 
+      d="M100 80 V 20 M100 30 Q 120 30 130 10 M100 30 Q 80 30 70 10" 
+      fill="none" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      strokeLinecap="round"
+      className="text-[#d97706]"
+    />
+    <circle cx="100" cy="80" r="4" fill="currentColor" className="text-[#d97706]" />
+    <path 
+      d="M100 50 Q 115 50 120 40 M100 50 Q 85 50 80 40" 
+      fill="none" 
+      stroke="currentColor" 
+      strokeWidth="1.5" 
+      className="text-[#d97706] opacity-60"
+    />
   </svg>
 );
 
 const App: React.FC = () => {
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [showCover, setShowCover] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [entries, setEntries] = useState<DictionaryEntry[]>(() => {
     const saved = localStorage.getItem('kamus_jawa_entries');
@@ -38,12 +59,6 @@ const App: React.FC = () => {
   const [isSuggesting, setIsSuggesting] = useState(false);
 
   useEffect(() => {
-    // Splash screen tampil selama 3 detik sebelum masuk ke aplikasi
-    const timer = setTimeout(() => setIsLoaded(true), 3000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
     localStorage.setItem('kamus_jawa_entries', JSON.stringify(entries));
   }, [entries]);
 
@@ -57,6 +72,14 @@ const App: React.FC = () => {
       e.kramaAlus.toLowerCase().includes(lowerQuery)
     );
   }, [entries, searchQuery]);
+
+  const handleBack = () => {
+    if (searchQuery) {
+      setSearchQuery('');
+    } else {
+      setShowCover(true);
+    }
+  };
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -101,65 +124,68 @@ const App: React.FC = () => {
     setIsSuggesting(false);
   };
 
-  if (!isLoaded) {
+  if (showCover) {
     return (
-      <div className="fixed inset-0 bg-[#422f1e] flex flex-col items-center justify-between transition-none overflow-hidden text-white">
-        {/* Bingkai Atas */}
-        <div className="w-full h-12 border-b-4 border-[#b4905a]/40 bg-[#422f1e]"></div>
-        
-        <div className="flex flex-col items-center flex-1 justify-center py-10">
-          {/* Ornamen Atas */}
-          <div className="mb-6">
-            <OrnamenEmas />
+      <div className="fixed inset-0 bg-[#3d231a] flex flex-col items-center justify-between py-20 px-6 text-white text-center animate-in fade-in duration-700">
+        <div className="flex-1 flex flex-col items-center justify-center space-y-10">
+          {/* Ukiran Jawa Accent */}
+          <UkiranJawa className="w-48 md:w-64 h-auto drop-shadow-lg" />
+          
+          {/* Tulisan Putih */}
+          <div className="space-y-4">
+            <h1 className="text-7xl md:text-9xl font-serif font-bold tracking-tight leading-none">
+              Kamus
+            </h1>
+            <h2 className="text-4xl md:text-5xl font-serif font-light tracking-wide opacity-80">
+              Bahasa Jawa
+            </h2>
           </div>
 
-          {/* Gunungan Tengah */}
-          <div className="mb-8">
-            <svg viewBox="0 0 100 130" className="w-48 h-64 text-[#b4905a] fill-current">
-              <path d="M50 5 L95 110 L5 110 Z" fill="none" stroke="currentColor" strokeWidth="1.5" />
-              <path d="M50 15 L85 105 L15 105 Z" fill="none" stroke="currentColor" strokeWidth="1" />
-              <path d="M50 10 C30 40 15 70 15 95 Q 15 105 50 105 Q 85 105 85 95 C 85 70 70 40 50 10" opacity="0.9" />
-              <rect x="44" y="92" width="12" height="13" fill="#1a120b" />
-              <path d="M46 94 H54 V103 H46 Z" fill="currentColor" />
-              <path d="M50 30 V80 M30 55 H70" stroke="#1a120b" strokeWidth="0.5" />
-            </svg>
-          </div>
+          {/* Elegant Divider */}
+          <div className="w-32 h-[1px] bg-gradient-to-r from-transparent via-white/40 to-transparent"></div>
 
-          {/* Judul Teks */}
-          <div className="text-center">
-            <h1 className="text-6xl md:text-8xl font-serif font-medium mb-1 tracking-tight">Kamus</h1>
-            <h1 className="text-6xl md:text-8xl font-serif font-medium mb-8 tracking-tight">Bahasa Jawa</h1>
-            
-            {/* Garis Pemisah */}
-            <div className="w-64 h-[2px] bg-[#b4905a]/60 mx-auto mb-6"></div>
-            
-            {/* Nama Pembuat */}
-            <p className="text-[#b4905a] text-sm tracking-[0.3em] font-sans uppercase">By:nyk22</p>
-          </div>
-
-          {/* Ornamen Bawah */}
-          <div className="mt-12 rotate-180">
-            <OrnamenEmas />
-          </div>
+          {/* Tombol Mulai */}
+          <button 
+            onClick={() => setShowCover(false)}
+            className="group relative px-12 py-3 overflow-hidden rounded-full border border-white/20 transition-all hover:border-white/60 active:scale-95"
+          >
+            <div className="absolute inset-0 bg-white/5 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+            <span className="relative z-10 text-xs font-bold tracking-[0.3em] uppercase">
+              Mulai Belajar
+            </span>
+          </button>
         </div>
 
-        {/* Bingkai Bawah */}
-        <div className="w-full h-12 border-t-4 border-[#b4905a]/40 bg-[#422f1e]"></div>
+        {/* Footer by:nyk22 */}
+        <div className="mt-auto">
+          <p className="text-white/30 text-[10px] font-sans tracking-[0.5em] uppercase">
+            by:nyk22
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-[#fcfaf2]">
       {/* Header */}
       <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b-2 border-amber-900/10 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="bg-amber-100 p-2 rounded-lg border border-amber-200">
-                <i className="fas fa-scroll text-amber-800 text-lg"></i>
-              </div>
-              <div>
+            <div className="flex items-center gap-4">
+              {/* Tombol Kembali Pintar */}
+              <button 
+                onClick={handleBack}
+                className="w-10 h-10 rounded-full flex items-center justify-center bg-amber-50 text-amber-900 hover:bg-amber-100 transition-all active:scale-90 border border-amber-200 shadow-sm"
+                title={searchQuery ? "Hapus Pencarian" : "Kembali ke Cover"}
+              >
+                <i className={`fas ${searchQuery ? 'fa-times' : 'fa-arrow-left'} text-sm`}></i>
+              </button>
+              
+              <div className="flex items-center gap-3">
+                <div className="bg-amber-100 p-2 rounded-lg border border-amber-200">
+                  <i className="fas fa-scroll text-amber-800 text-lg"></i>
+                </div>
                 <h2 className="text-xl font-bold text-slate-900 font-jawa">
                   Kamus Bahasa Jawa
                 </h2>
